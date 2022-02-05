@@ -54,10 +54,10 @@ export default () => {
 
     return (
         <SafeAreaView style={Styles.container}>
-            <View style={Styles.content_poll}>
+            <View style={Styles.content_survey}>
                 <View style={Styles.header_title}>
                     <Text style={Styles.title}>
-                        {String.titlePoll}
+                        {String.titleSurvey}
                     </Text>
                 </View>
                 {loading ?
@@ -65,7 +65,7 @@ export default () => {
                         <ActivityIndicator size="large" color={Colors.primary} />
                     </> : <>
                         <CustomPicker
-                            title={String.titlePickerPoll}
+                            title={String.titlePickerSurvey}
                             data={genres}
                             selectedValue={selectedItem}
                             onValueChange={handlerSelectedItem}

@@ -1,5 +1,5 @@
-import React from 'react'
-import { View, SafeAreaView, Text, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, SafeAreaView, Text, ScrollView, ActivityIndicator } from 'react-native'
 import Styles from '../resources/styles/styles'
 import CustomBarChart from '../components/customBarChart'
 import Colors from '../resources/styles/colors'
@@ -8,6 +8,8 @@ import { getNamesGenre, getCountGenre } from '../utils/util'
 import CustomTable from '../components/customTable'
 
 export default () => {
+
+    const [loading, setLoading] = useState(false)
 
     const dataList = [{ name: 'Pop', count: 20 }, { name: 'Rock', count: 45 }, { name: 'Jazz', count: 28 }, { name: 'Clasica', count: 80 }, { name: 'Electronica', count: 43 }]
     const data = {
@@ -19,7 +21,6 @@ export default () => {
         ]
     }
 
-
     return (
         <SafeAreaView style={[Styles.container, { backgroundColor: Colors.white }]}>
             <ScrollView style={{ flexDirection: 'column', flex: 1 }}>
@@ -29,8 +30,13 @@ export default () => {
                             {String.titleResults}
                         </Text>
                     </View>
-                    <CustomTable items={dataList} />
-                    <CustomBarChart data={data} style={Styles.barchart} />
+                    {loading ?
+                        <>
+                            <ActivityIndicator size="large" color={Colors.primary} />
+                        </> : <>
+                            <CustomTable items={dataList} />
+                            <CustomBarChart data={data} style={Styles.barchart} />
+                        </>}
                 </View>
             </ScrollView>
         </SafeAreaView >

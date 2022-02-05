@@ -1,6 +1,6 @@
 const String ={
-    titlePoll:'Encuesta 3it',
-    titlePickerPoll:'Estilo musical',
+    titleSurvey:'Encuesta 3it',
+    titlePickerSurvey:'Estilo musical',
     placeholderEmail:'Ingrese el correo',
     send:'Enviar',
     selection:'Seleccione',
@@ -9,7 +9,9 @@ const String ={
     titleGenre:'Estilo musical',
     messageEmail:'No ingreso el correo electronico',
     messageGenre:'No selecciono ningun estilo de musica',
-    titleResults:'Resultados'
+    titleResults:'Resultados',
+    titleAbout:'Acerca de esta App',
+    welcome:'Bienvenidos'
 }
 
 export default String
