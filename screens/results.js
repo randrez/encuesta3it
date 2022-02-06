@@ -7,6 +7,7 @@ import String from '../resources/strings/string'
 import CustomTable from '../components/customTable'
 import { apiGet } from '../apis/generalApi'
 import { getDataGraphic } from '../utils/util'
+import NetInfo from '@react-native-community/netinfo'
 
 export default ({ navigation }) => {
 
