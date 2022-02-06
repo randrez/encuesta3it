@@ -13,7 +13,7 @@ const config = {
     color: () => Colors.primary,
 }
 
-const style = { marginVertical: 10 }
+const style = { marginVertical: 0 }
 
 export default class CustomBarChart extends Component {
 

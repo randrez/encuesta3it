@@ -4,7 +4,7 @@ import { CustomPicker } from '../components'
 import Styles from '../resources/styles/styles'
 import Colors from '../resources/styles/colors'
 import String from '../resources/strings/string'
-import { apiGet } from '../apis/generalApi'
+import { apiGet, apiPost } from '../apis/generalApi'
 
 export default () => {
 
@@ -19,15 +19,21 @@ export default () => {
     }, [])
 
     const fetchGenres = async () => {
-        const response = await apiGet()
         const arrayGenres = []
-        arrayGenres.push({ id: 0, label: String.selection })
-        response.map((data) => {
-            let item = { id: data.id, label: data.name }
-            arrayGenres.push(item)
-        })
-        setGenres(arrayGenres)
-        setLoading(false)
+        const response = await apiGet(String.listGenre)
+        if(response){
+            setLoading(false)
+            if (response.state) {
+                arrayGenres.push({ id: 0, label: String.selection })
+                response.data.map((data) => {
+                    const item = { id: data.id, label: data.name }
+                    arrayGenres.push(item)
+                })
+                setGenres(arrayGenres)
+            } else {
+                Alert.alert(String.execptionTitle, response.message)
+            }
+        }
     }
 
     const handlerSelectedItem = item => {
@@ -41,14 +47,34 @@ export default () => {
     const handlerPressButton = () => {
         if (selectedItem != undefined && selectedItem.id != 0) {
             if (email != '') {
-                setSelectedItem(genres[0])
-                setEmail('')
-                refInput.current.focus()
+                setLoading(true)
+                sendSurvey()
             } else {
                 Alert.alert(String.titleEmail, String.messageEmail)
             }
         } else {
             Alert.alert(String.titleGenre, String.messageGenre)
+        }
+    }
+
+    const sendSurvey = async () => {
+        const response = await apiPost(String.createSurvey, { musicGenreId: selectedItem.id, email: email })
+        console.log(response)
+        if (response.state) {
+            setLoading(false)
+            Alert.alert(
+                String.successTitle,
+                String.successMessage,
+                [{
+                    text: String.ok, onPress: () => {
+                        setSelectedItem(genres[0])
+                        setEmail('')
+                        refInput.current.focus()
+                    }
+                }],
+                { cancelable: false })
+        } else {
+            Alert.alert(String.execptionTitle, response.message)
         }
     }
 

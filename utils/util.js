@@ -1,17 +1,28 @@
-const getNamesGenre = (genres) =>{
+const getNamesGenre = (results) =>{
     const names = []
-    genres.map((genre) => {
-        names.push(genre.name)
+    results.map((result) => {
+        names.push(result.name)
     })
     return names
 }
 
-const getCountGenre = (genres) => {
+const getCountGenre = (results) => {
     const counts = []
-    genres.map((genre) => {
-        counts.push(genre.count)
+    results.map((result) => {
+        counts.push(result.count)
     })
     return counts
 }
 
-export { getNamesGenre, getCountGenre}
+const getDataGraphic = (results) => {
+    return {
+        labels: getNamesGenre(results),
+        datasets: [
+            {
+                data: getCountGenre(results),
+            }
+        ]
+    }
+}
+
+export { getDataGraphic}

@@ -4,21 +4,34 @@ import Styles from '../resources/styles/styles'
 import CustomBarChart from '../components/customBarChart'
 import Colors from '../resources/styles/colors'
 import String from '../resources/strings/string'
-import { getNamesGenre, getCountGenre } from '../utils/util'
 import CustomTable from '../components/customTable'
+import { apiGet } from '../apis/generalApi'
+import {getDataGraphic} from '../utils/util'
 
 export default () => {
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
+    const [results, setResults] = useState([])
 
-    const dataList = [{ name: 'Pop', count: 20 }, { name: 'Rock', count: 45 }, { name: 'Jazz', count: 28 }, { name: 'Clasica', count: 80 }, { name: 'Electronica', count: 43 }]
-    const data = {
-        labels: getNamesGenre(dataList),
-        datasets: [
-            {
-                data: getCountGenre(dataList),
+    useEffect(() => {
+        fecthResults()
+    }, [])
+
+    const fecthResults = async () => {
+        const items = []
+        const response = await apiGet(String.resultsSurvey)
+        if (response) {
+            setLoading(false)
+            if (response.state) {
+                response.data.map((data) => {
+                    const item = { name: data[0], count: data[1] }
+                    items.push(item)
+                })
+                setResults(items)
+            } else {
+                Alert.alert(String.execptionTitle, response.message)
             }
-        ]
+        }
     }
 
     return (
@@ -34,8 +47,8 @@ export default () => {
                         <>
                             <ActivityIndicator size="large" color={Colors.primary} />
                         </> : <>
-                            <CustomTable items={dataList} />
-                            <CustomBarChart data={data} style={Styles.barchart} />
+                            <CustomTable items={results} />
+                            <CustomBarChart data={getDataGraphic(results)} style={Styles.barchart} />
                         </>}
                 </View>
             </ScrollView>

@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.white
     },
-    content_poll: {
+    content_survey: {
         flex: 0.7,
         justifyContent: 'center',
         alignItems: 'center'
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     content_table:{
+        width:'100%',
         flexDirection: 'row', 
         borderBottomWidth: 1, 
         borderBottomColor: Colors.grayDark,  
