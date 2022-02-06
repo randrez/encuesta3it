@@ -18,7 +18,9 @@ const String ={
     successTitle:'Envió Exitoso',
     successMessage:'Se envió y almaceno correctamente la encuesta',
     execptionTitle:'Ocurrio un problema',
-    ok:'Ok'
+    ok:'Ok',
+    noInformation:'No retorno información',
+    noConnection:'No presenta conexion por favor conecetese a una red'
 }
 
 export default String

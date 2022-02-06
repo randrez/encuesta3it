@@ -5,23 +5,40 @@ import Styles from '../resources/styles/styles'
 import Colors from '../resources/styles/colors'
 import String from '../resources/strings/string'
 import { apiGet, apiPost } from '../apis/generalApi'
+import NetInfo from '@react-native-community/netinfo'
 
-export default () => {
+export default ({ navigation }) => {
 
     const [loading, setLoading] = useState(true)
     const [selectedItem, setSelectedItem] = useState()
     const [email, setEmail] = useState('')
     const [genres, setGenres] = useState([])
+    const [isConnected, setIsConnected] = useState()
     const refInput = useRef()
 
     useEffect(() => {
         fetchGenres()
-    }, [])
+        checkConnection()
+        const willFocusSubscription = navigation.addListener('focus', () => {
+            setSelectedItem([{ id: 0, label: String.selection }])
+            setEmail('')
+            checkConnection()
+            setLoading(true)
+            fetchGenres()
+        })
+        return willFocusSubscription
+    }, [navigation])
+
+    const checkConnection = () => {
+        NetInfo.addEventListener(state => {
+            setIsConnected(state.isConnected)
+        })
+    }
 
     const fetchGenres = async () => {
         const arrayGenres = []
         const response = await apiGet(String.listGenre)
-        if(response){
+        if (response) {
             setLoading(false)
             if (response.state) {
                 arrayGenres.push({ id: 0, label: String.selection })
@@ -80,41 +97,49 @@ export default () => {
 
     return (
         <SafeAreaView style={Styles.container}>
-            <View style={Styles.content_survey}>
+            {isConnected ? <>
+                <View style={Styles.content_survey}>
+                    <View style={Styles.header_title}>
+                        <Text style={Styles.title}>
+                            {String.titleSurvey}
+                        </Text>
+                    </View>
+                    {loading ?
+                        <>
+                            <ActivityIndicator size="large" color={Colors.primary} />
+                        </> : <>
+                            <CustomPicker
+                                title={String.titlePickerSurvey}
+                                data={genres}
+                                selectedValue={selectedItem}
+                                onValueChange={handlerSelectedItem}
+                            />
+                            <View>
+                                <TextInput
+                                    ref={refInput}
+                                    style={Styles.input}
+                                    onChangeText={handlerChangeText}
+                                    value={email}
+                                    placeholder={String.placeholderEmail}
+                                    keyboardType="email-address"
+                                />
+                            </View>
+                            <View>
+                                <Button
+                                    style={{ width: 200 }}
+                                    title={String.send}
+                                    onPress={handlerPressButton}
+                                />
+                            </View>
+                        </>}
+                </View>
+            </> : <>
                 <View style={Styles.header_title}>
                     <Text style={Styles.title}>
-                        {String.titleSurvey}
+                        {String.noConnection}
                     </Text>
                 </View>
-                {loading ?
-                    <>
-                        <ActivityIndicator size="large" color={Colors.primary} />
-                    </> : <>
-                        <CustomPicker
-                            title={String.titlePickerSurvey}
-                            data={genres}
-                            selectedValue={selectedItem}
-                            onValueChange={handlerSelectedItem}
-                        />
-                        <View>
-                            <TextInput
-                                ref={refInput}
-                                style={Styles.input}
-                                onChangeText={handlerChangeText}
-                                value={email}
-                                placeholder={String.placeholderEmail}
-                                keyboardType="email-address"
-                            />
-                        </View>
-                        <View>
-                            <Button
-                                style={{ width: 200 }}
-                                title={String.send}
-                                onPress={handlerPressButton}
-                            />
-                        </View>
-                    </>}
-            </View>
+            </>}
         </SafeAreaView>
     )
 }

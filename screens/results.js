@@ -6,16 +6,30 @@ import Colors from '../resources/styles/colors'
 import String from '../resources/strings/string'
 import CustomTable from '../components/customTable'
 import { apiGet } from '../apis/generalApi'
-import {getDataGraphic} from '../utils/util'
+import { getDataGraphic } from '../utils/util'
 
-export default () => {
+export default ({ navigation }) => {
 
     const [loading, setLoading] = useState(true)
     const [results, setResults] = useState([])
+    const [isConnected, setIsConnected] = useState()
 
     useEffect(() => {
         fecthResults()
-    }, [])
+        checkConnection() 
+        const willFocusSubscription = navigation.addListener('focus', () => {
+            checkConnection() 
+            setLoading(true)
+            fecthResults()
+        });
+        return willFocusSubscription
+    }, [navigation])
+
+    const checkConnection = () => {
+        NetInfo.addEventListener(state => {
+            setIsConnected(state.isConnected)
+        })
+    }
 
     const fecthResults = async () => {
         const items = []
@@ -36,22 +50,30 @@ export default () => {
 
     return (
         <SafeAreaView style={[Styles.container, { backgroundColor: Colors.white }]}>
-            <ScrollView style={{ flexDirection: 'column', flex: 1 }}>
-                <View style={Styles.content_results}>
-                    <View style={Styles.header_title}>
-                        <Text style={Styles.title}>
-                            {String.titleResults}
-                        </Text>
+            {isConnected ? <>
+                <ScrollView style={{ flexDirection: 'column', flex: 1 }}>
+                    <View style={Styles.content_results}>
+                        <View style={Styles.header_title}>
+                            <Text style={Styles.title}>
+                                {String.titleResults}
+                            </Text>
+                        </View>
+                        {loading ?
+                            <>
+                                <ActivityIndicator size="large" color={Colors.primary} />
+                            </> : <>
+                                <CustomTable items={results} />
+                                <CustomBarChart data={getDataGraphic(results)} style={Styles.barchart} />
+                            </>}
                     </View>
-                    {loading ?
-                        <>
-                            <ActivityIndicator size="large" color={Colors.primary} />
-                        </> : <>
-                            <CustomTable items={results} />
-                            <CustomBarChart data={getDataGraphic(results)} style={Styles.barchart} />
-                        </>}
+                </ScrollView>
+            </> : <>
+                <View style={Styles.header_title}>
+                    <Text style={Styles.title}>
+                        {String.noConnection}
+                    </Text>
                 </View>
-            </ScrollView>
+            </>}
         </SafeAreaView >
     )
 }
